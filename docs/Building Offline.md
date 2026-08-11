@@ -9,6 +9,10 @@ committed to the repo at [`eng/offline-packages`](../eng/offline-packages).
 * The .NET SDK whose version matches [`global.json`](../global.json) (`sdk.version`,
   with `rollForward: patch`). The offline feed was prepared for **Ubuntu 24.04 / linux-x64**;
   the committed packages include the `linux-x64` runtime/host packs.
+  A newer distro SDK (e.g. 10.0.110) will request targeting packs like
+  `Microsoft.WindowsDesktop.App.Ref` **10.0.10**; those versions are also
+  in the feed. If restore asks for a pack version you do not have, add that
+  exact nupkg from nuget.org into `eng/offline-packages`.
 * No internet connection is required. **nuget.org is not enough** and is not used:
   the build SDK (`Microsoft.DotNet.Arcade.Sdk`) and several compiler packages are
   only on Azure DevOps feeds, so they are committed here instead.
