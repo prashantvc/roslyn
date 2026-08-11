@@ -9,7 +9,9 @@ committed to the repo at [`eng/offline-packages`](../eng/offline-packages).
 * The .NET SDK whose version matches [`global.json`](../global.json) (`sdk.version`,
   with `rollForward: patch`). The offline feed was prepared for **Ubuntu 24.04 / linux-x64**;
   the committed packages include the `linux-x64` runtime/host packs.
-* No internet connection is required.
+* No internet connection is required. **nuget.org is not enough** and is not used:
+  the build SDK (`Microsoft.DotNet.Arcade.Sdk`) and several compiler packages are
+  only on Azure DevOps feeds, so they are committed here instead.
 
 > The SDK itself is **not** committed (it is large and you said the target already has
 > it installed). Only the NuGet packages travel with the clone.
@@ -55,6 +57,10 @@ dotnet test    <project> -f net10.0 -c Debug --no-restore --no-build
 
 `NuGet.offline.config` defines a single package source — `eng/offline-packages` — and
 no network feeds, so restore can only ever use the committed packages.
+
+The helper scripts also extract `Microsoft.DotNet.Arcade.Sdk` (from that same folder)
+into the NuGet global-packages cache. MSBuild resolves Arcade as an SDK *before*
+`--configfile` applies, and that package is **not published to nuget.org**.
 
 ## Verified
 

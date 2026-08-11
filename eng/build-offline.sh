@@ -20,23 +20,14 @@
 set -euo pipefail
 
 repo_root="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+# shellcheck source=offline-init.sh
+source "$repo_root/eng/offline-init.sh"
 
 if [[ $# -lt 1 ]]; then
   echo "usage: $0 <project.csproj|.vbproj> [extra dotnet build args]" >&2
   exit 2
 fi
 project="$1"; shift
-
-# Prefer a repo-local SDK if present; otherwise use the machine's installed dotnet.
-if [[ -x "$repo_root/.dotnet/dotnet" ]]; then
-  dotnet="$repo_root/.dotnet/dotnet"
-  export DOTNET_ROOT="$repo_root/.dotnet"
-  export DOTNET_MULTILEVEL_LOOKUP=0
-else
-  dotnet="$(command -v dotnet)"
-fi
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
-export DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
 
 config="Debug"; framework="net10.0"; passthru=()
 while [[ $# -gt 0 ]]; do
